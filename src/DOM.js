@@ -5,6 +5,11 @@
   Считаем, что всегда передается тег, допускающий вставку текста в качестве своего содержимого (P, DIV, I и пр.).
 */
 export function appendToBody(tag, content, count) {
+    for (let i = 0; i < count; i++) {
+        const elem = document.createElement(tag);
+        elem.innerHTML = content;
+        document.body.appendChild(elem);
+    }
 }
 
 /*
@@ -15,6 +20,20 @@ export function appendToBody(tag, content, count) {
   Сформированное дерево верните в качестве результата работы функции.
 */
 export function generateTree(childrenCount, level) {
+    const firstElem = document.createElement('div');
+    firstElem.className = 'item_1';
+    document.body.appendChild(firstElem);
+    for (let i = 1; i < level; i++) {
+        let nodes = document.getElementsByClassName(`item_${i}`);
+        for (let node of nodes) {
+            for (let j = 0; j < childrenCount; j++) {
+                const newElem = document.createElement('div');
+                newElem.className = `item_${i + 1}`;
+                node.appendChild(newElem);
+            }
+        }
+    }
+    return document.getElementsByClassName('item_1')[0];
 }
 
 /*
@@ -25,5 +44,21 @@ export function generateTree(childrenCount, level) {
   которые находились внутри переписанных тегов.
   Сформированное дерево верните в качестве результата работы функции.
 */
+
 export function replaceNodes() {
+    const tree = generateTree(2, 3);
+    const changingElems = tree.getElementsByClassName('item_2');
+    for (let elem of changingElems) {
+        const section = document.createElement('section');
+        section.className = `item_2`;
+
+        const childrens = elem.childNodes;
+        childrens.forEach(function (item) {
+            let clone = item.cloneNode(true);
+            section.appendChild(clone);
+        });
+
+        elem.parentNode.replaceChild(section, elem);
+    }
+    return tree;
 }
